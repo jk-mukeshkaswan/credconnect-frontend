@@ -31,13 +31,28 @@ const OnboardingPage: React.FC = () => {
       // });
       setIsSuccess(true);
       // Navigate to lender match page after showing success message
-      setTimeout(() => {
-        navigate('/lender-match', {
-          state: {
-            businessData: data
-          }
-        });
-      }, 2000);
+
+
+      const response = await fetch('http://localhost:5000/api/match-lenders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      navigate('/lender-match', {
+        state: {
+          businessData: data,
+          matchedLenders: result.lenders,
+        }
+      });
+      
+      // setTimeout(() => {
+      //   navigate('/lender-match', {
+      //     state: {
+      //       businessData: data
+      //     }
+      //   });
+      // }, 2000);
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('An error occurred. Please try again.');
