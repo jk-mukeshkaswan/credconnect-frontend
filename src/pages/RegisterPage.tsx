@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from 'lucide-react';
 interface RegisterFormData {
   company_name: string;
-  legal_name: string;
   phone: string;
+  email: string;
   industry_sector: string;
   turnover_last_fy: number;
   incorporation_date: string;
@@ -30,8 +30,30 @@ const RegisterPage: React.FC = () => {
   const onSubmit = async (data: RegisterFormData) => {
     setIsSubmitting(true);
     try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Map frontend fields to backend payload
+      const payload = {
+        companyName: data.company_name,
+        phoneNumber: data.phone,
+        email: data.email,
+        businessType: data.business_type,
+        industrySector: data.industry_sector,
+        lastFyTurnover: data.turnover_last_fy,
+        incorporationDate: data.incorporation_date,
+        cinNumber: data.cin_number,
+        panNumber: data.pan_number,
+        gstinNumber: data.gstin,
+        status: 'pending',
+      };
+      const response = await fetch('http://localhost:5001/api/v1/registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to register business');
+      }
       setIsSuccess(true);
       // Navigate to lender match page after showing success message
       setTimeout(() => {
@@ -91,14 +113,19 @@ const RegisterPage: React.FC = () => {
                         </p>}
                     </div>
                     <div>
-                      <label htmlFor="legal_name" className="block text-sm font-medium text-gray-700 mb-1">
-                        Legal Name
+                      <label htmlFor="business_type" className="block text-sm font-medium text-gray-700 mb-1">
+                        Business Type
                       </label>
-                      <input type="text" id="legal_name" {...register('legal_name', {
-                    required: 'Legal name is required'
-                  })} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                      {errors.legal_name && <p className="mt-1 text-sm text-red-600">
-                          {errors.legal_name.message}
+                      <select id="business_type" {...register('business_type', {
+                    required: 'Business type is required'
+                  })} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Business Type</option>
+                        {BUSINESS_TYPES.map(type => <option key={type} value={type}>
+                            {type}
+                          </option>)}
+                      </select>
+                      {errors.business_type && <p className="mt-1 text-sm text-red-600">
+                          {errors.business_type.message}
                         </p>}
                     </div>
                     <div>
@@ -117,19 +144,18 @@ const RegisterPage: React.FC = () => {
                         </p>}
                     </div>
                     <div>
-                      <label htmlFor="business_type" className="block text-sm font-medium text-gray-700 mb-1">
-                        Business Type
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Email
                       </label>
-                      <select id="business_type" {...register('business_type', {
-                    required: 'Business type is required'
-                  })} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select Business Type</option>
-                        {BUSINESS_TYPES.map(type => <option key={type} value={type}>
-                            {type}
-                          </option>)}
-                      </select>
-                      {errors.business_type && <p className="mt-1 text-sm text-red-600">
-                          {errors.business_type.message}
+                      <input type="email" id="email" {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Please enter a valid email address'
+                    }
+                  })} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      {errors.email && <p className="mt-1 text-sm text-red-600">
+                          {errors.email.message}
                         </p>}
                     </div>
                   </div>
@@ -197,7 +223,7 @@ const RegisterPage: React.FC = () => {
                       <input type="text" id="cin_number" {...register('cin_number', {
                     required: 'CIN number is required',
                     pattern: {
-                      value: /^[A-Z0-9]{10}$/,
+                      value: /^[A-Z0-9]{21}$/,
                       message: 'Please enter a valid CIN number'
                     }
                   })} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />

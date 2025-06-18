@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LockIcon, UserIcon } from 'lucide-react';
+
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username || !password) {
-      setError('Please enter both username and password');
-      return;
-    }
     setIsLoading(true);
     setError('');
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // For demo purposes - in production this would be an actual API call
-      if (username === 'admin' && password === 'password') {
-        // Save token to localStorage
-        localStorage.setItem('adminToken', 'demo-token-12345');
-        navigate('/admin/dashboard');
-      } else {
-        setError('Invalid username or password');
+      const response = await fetch('http://localhost:5001/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message || 'Invalid username or password');
+        return;
       }
+      const data = await response.json();
+      localStorage.setItem('adminToken', data.token);
+      navigate('/admin/dashboard');
     } catch (err) {
       setError('An error occurred. Please try again.');
-      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }
   };
+
   return <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full space-y-8">
         <div>
@@ -97,4 +98,5 @@ const LoginPage: React.FC = () => {
       </div>
     </div>;
 };
+
 export default LoginPage;
