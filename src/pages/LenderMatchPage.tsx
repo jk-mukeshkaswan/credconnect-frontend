@@ -87,7 +87,7 @@ const LenderMatchPage: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <img src="/Frame_427321370.svg" alt="Jai Kisan" className="h-8 w-auto" />
-            <button onClick={() => navigate('/')} className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+            <button onClick={() => navigate('/onboarding')} className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
               <ArrowLeftIcon className="h-4 w-4 mr-2" /> Back to application
             </button>
           </div>
