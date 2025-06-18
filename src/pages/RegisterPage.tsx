@@ -44,7 +44,7 @@ const RegisterPage: React.FC = () => {
         gstinNumber: data.gstin,
         status: 'pending',
       };
-      const response = await fetch('http://localhost:5001/api/v1/registration', {
+      const response = await fetch('https://credconnect-backend.onrender.com/api/v1/registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

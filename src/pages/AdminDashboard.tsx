@@ -44,7 +44,7 @@ const AdminDashboard: React.FC = () => {
     try {
       const token = localStorage.getItem('adminToken')
       const response = await fetch(
-        'http://localhost:5001/api/v1/dashboard-stats',
+        'https://credconnect-backend.onrender.com/api/v1/dashboard-stats',
         {
           headers: {
             Authorization: `Bearer ${token}`,
