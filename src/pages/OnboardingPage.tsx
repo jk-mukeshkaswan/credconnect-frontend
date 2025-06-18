@@ -23,7 +23,7 @@ const OnboardingPage: React.FC = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       setIsSuccess(true);
-      const response = await fetch('http://localhost:5000/api/match-lenders', {
+      const response = await fetch('https://credconnect-backend.onrender.com/api/match-lenders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
